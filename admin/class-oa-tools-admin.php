@@ -36,6 +36,15 @@ class OA_Tools_Admin
     private $version;
 
     /**
+     * An instance of OA_Tools_Mailgun.
+     *
+     * @since    1.0.0
+     *
+     * @var class An instance of OA_Tools_Mailgun
+     */
+    public $mailgun;
+
+    /**
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
@@ -47,6 +56,7 @@ class OA_Tools_Admin
     {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
+        $this->mailgun = new OA_Tools_Mailgun();
     }
 
     /**
@@ -95,6 +105,9 @@ class OA_Tools_Admin
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__).'js/oa-tools-admin.js', array('jquery'), $this->version, false);
     }
 
+    /**
+     * Export ACF Fields to JSON.
+     */
     public function acf_json_save_point($path)
     {
 
@@ -105,6 +118,9 @@ class OA_Tools_Admin
         return $path;
     }
 
+    /**
+     * Import ACF Fields from JSON.
+     */
     public function acf_json_load_point($paths)
     {
 
@@ -113,5 +129,78 @@ class OA_Tools_Admin
 
         // return
         return $paths;
+    }
+
+    /**
+     * Actions on position save.
+     *
+     * When a position is saved, we create the list for it in Mailgun if it
+     * does not yet exist. We also add them to the LEC list. If a person is
+     * defined for the position, then we also add that person's email address
+     * to the position list.
+     *
+     * @since 1.0.0
+     */
+    public function position_save_action($post_id)
+    {
+        $position_email = get_field('position_email', $post_id);
+        $person = get_field('person', $post_id);
+        $person = $person[0];
+        $title = get_the_title();
+        $lists = $this->mailgun->get_lists();
+        if ($position_email) {
+            if (!in_array($position_email, $lists)) {
+                $this->mailgun->create_list($position_email, $title);
+            }
+            $this->mailgun->add_list_member('lec@list.tahosalodge.org', $position_email, $title);
+        }
+        if ($person) {
+            $person_email = get_field('person_email', $person);
+            $fname = get_field('first_name', $person);
+            $lname = get_field('last_name', $person);
+            $inList = $this->mailgun->check_list_for_member($position_email, $person_email);
+            if (!$inList) {
+                $this->mailgun->add_list_member($position_email, $person_email, $fname.' '.$lname);
+            }
+        }
+    }
+
+    /**
+     * Actions on person save.
+     *
+     * When a person is saved, we get the positions that they are assigned to,
+     * and add their email to each position list, if it is not already in the
+     * specified list.
+     *
+     * @since 1.0.0
+     */
+    public function person_save_action($post_id)
+    {
+        $fname = get_field('first_name', $post_id);
+        $lname = get_field('last_name', $post_id);
+        $person_email = get_field('person_email', $post_id);
+        $parent_email = get_field('parent_email', $post_id);
+        $title = get_the_title();
+        if ($person_email) {
+            $options = array(
+                'post_type' => 'oaldr_position',
+                'posts_per_page' => -1,
+                'meta_query' => array(
+                    array(
+                      'key' => 'person',
+                      'value' => $post_id,
+                      'compare' => 'LIKE',
+                    ),
+                ),
+            );
+            $query = new WP_Query($options);
+            foreach ($query->posts as $post) {
+                $position_email = get_field('position_email', $post->ID);
+                $inList = $this->mailgun->check_list_for_member($position_email, $person_email);
+                if (!$inList) {
+                    $this->mailgun->add_list_member($position_email, $person_email, $fname.' '.$lname);
+                }
+            }
+        }
     }
 }

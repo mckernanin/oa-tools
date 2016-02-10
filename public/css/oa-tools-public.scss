@@ -23,7 +23,7 @@
     display:inline-block;
     padding: 5px 30px;
     text-align: center;
-    background:#e5e5e5; 
+    background:#e5e5e5;
     margin-bottom: 25px;
     width:100%;
     box-sizing: border-box;
@@ -78,7 +78,7 @@
         background: #FFF;
         color: #555;
         border-top: 1px solid rgba(0, 0, 0, 0);
-        border-bottom: 1px solid #F2F2F2;    
+        border-bottom: 1px solid #F2F2F2;
 
         &.active {
             background: #C62228;
@@ -122,11 +122,11 @@
     position: relative;
     margin: 0 0 20px;
     min-height: 145px;
-    display:none;  
+    display:none;
     text-align: left;
     vertical-align: top;
     width: 50%;
-    
+
     &:only-of-type {
         width: 100%;
         margin-top: 20px;
