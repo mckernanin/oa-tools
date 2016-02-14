@@ -56,6 +56,7 @@ class OA_Tools_Admin
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->mailgun = new OA_Tools_Mailgun();
+		require_once plugin_dir_path( __FILE__ ) . 'includes/acf-fields.php';
 	}
 
 	/**
@@ -108,7 +109,7 @@ class OA_Tools_Admin
 	public function acf_json_save_point( $path ) {
 
 		// Update path.
-		$path = plugin_dir_path( __FILE__ ).'/admin/acf-json';
+		$path = plugin_dir_path( __FILE__ ) . '/admin/acf-json';
 
 		// Return.
 		return $path;
@@ -122,7 +123,7 @@ class OA_Tools_Admin
 	public function acf_json_load_point( $paths ) {
 
 		// Append path.
-		$paths[] = plugin_dir_path( __FILE__ ).'/admin/acf-json';
+		$paths[] = plugin_dir_path( __FILE__ ) . '/admin/acf-json';
 
 		// Return.
 		return $paths;
