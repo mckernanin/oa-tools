@@ -128,6 +128,7 @@ class OA_Tools_Mailgun {
 				 'address' => $address,
 				 'name' => $name,
 			 ));
+			 return $result;
 		} catch ( Exception $e ) {
 			$this->error_message( 'The following error occured when trying to add '.$address.' to '.$listAddress.': '.$e->getMessage() );
 		}
