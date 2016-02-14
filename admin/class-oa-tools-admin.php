@@ -163,9 +163,15 @@ class OA_Tools_Admin
 			$person_email = get_field( 'person_email', $person );
 			$fname = get_field( 'first_name', $person );
 			$lname = get_field( 'last_name', $person );
+			$copied_emails_person = get_field( 'copied_emails', $person );
 			$inList = $this->mailgun->check_list_for_member( $position_email, $person_email );
 			if ( ! $inList ) {
 				$this->mailgun->add_list_member( $position_email, $person_email, $fname.' '.$lname );
+			}
+			if ( $copied_emails_person ) {
+				foreach ( $copied_emails_person as $recipient ) {
+					$this->mailgun->add_list_member( $position_email, $recipient['email'], $recipient['name'] );
+				}
 			}
 		}
 	}
