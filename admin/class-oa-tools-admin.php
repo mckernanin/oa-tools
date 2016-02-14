@@ -56,7 +56,7 @@ class OA_Tools_Admin
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->mailgun = new OA_Tools_Mailgun();
-		require_once plugin_dir_path( __FILE__ ) . 'includes/acf-fields.php';
+		require_once plugin_dir_path( __FILE__ ) . 'acf-fields.php';
 	}
 
 	/**
