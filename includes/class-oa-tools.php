@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The file that defines the core plugin class
  *
@@ -161,7 +160,11 @@ class OA_Tools {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new OA_Tools_Admin( $this->get_plugin_name(), $this->get_version() );
-		$oatools_mailgun = new OA_Tools_Mailgun();
+		if ( ! empty( get_theme_mod( 'oaldr_mailgun_api_key' ) ) ) {
+			$oatools_mailgun = new OA_Tools_Mailgun();
+		} else {
+			wp_die( 'no api key defined' );
+		}
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -228,5 +231,4 @@ class OA_Tools {
 	public function get_version() {
 		return $this->version;
 	}
-
 }
