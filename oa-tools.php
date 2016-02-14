@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -23,6 +22,7 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       oa-tools
  * Domain Path:       /languages
+ * GitHub Plugin URI: mckernanin/oa-tools
  */
 
 // If this file is called directly, abort.
