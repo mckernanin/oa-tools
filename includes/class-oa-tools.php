@@ -121,7 +121,7 @@ class OA_Tools {
 		/**
 		 * The class responsible for registering post types and taxonomies.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-oa-tools-content_types.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-oa-tools-content-types.php';
 
 		/**
 		 * Class responsible for interfacing with the Mailgun API
