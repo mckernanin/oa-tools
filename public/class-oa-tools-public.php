@@ -113,6 +113,28 @@ class OA_Tools_Public {
 			'settings' 	=> 'oaldr_mailgun_api_key',
 	    ));
 
+		$wp_customize->add_setting( 'oaldr_mailgun_domain', array(
+	        'default' => '',
+	    ));
+
+		$wp_customize->add_control( 'oaldr_mailgun_domain', array(
+	        'label' 	=> 'Mailgun Domain',
+	        'section' 	=> 'oaldr_settings',
+	        'type' 		=> 'text',
+			'settings' 	=> 'oaldr_mailgun_domain',
+	    ));
+
+		$wp_customize->add_setting( 'oaldr_mailgun_main_list', array(
+	        'default' => '',
+	    ));
+
+		$wp_customize->add_control( 'oaldr_mailgun_main_list', array(
+	        'label' 	=> 'Mailgun Main List',
+	        'section' 	=> 'oaldr_settings',
+	        'type' 		=> 'text',
+			'settings' 	=> 'oaldr_mailgun_main_list',
+	    ));
+
 		$wp_customize->add_setting( 'oaldr_headshot_default', array(
 			'default' 	=> '',
 			'transport' => 'refresh',
