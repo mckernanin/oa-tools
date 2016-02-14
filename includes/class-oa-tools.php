@@ -162,8 +162,6 @@ class OA_Tools {
 		$plugin_admin = new OA_Tools_Admin( $this->get_plugin_name(), $this->get_version() );
 		if ( ! empty( get_theme_mod( 'oaldr_mailgun_api_key' ) ) ) {
 			$oatools_mailgun = new OA_Tools_Mailgun();
-		} else {
-			wp_die( 'no api key defined' );
 		}
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
