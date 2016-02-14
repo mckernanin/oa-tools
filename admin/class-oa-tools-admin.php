@@ -141,15 +141,23 @@ class OA_Tools_Admin
 	 */
 	public function position_save_action( $post_id ) {
 		$position_email = get_field( 'position_email', $post_id );
-		$person = get_field( 'person', $post_id );
-		$person = $person[0];
-		$title = get_the_title();
-		$lists = $this->mailgun->get_lists();
+		$person 		= get_field( 'person', $post_id );
+		$copied_emails 	= get_field( 'copied_emails', $post_id );
+		$person 		= $person[0];
+		$title 			= get_the_title();
+		$lists 			= $this->mailgun->get_lists();
+		$mg_domain 		= get_theme_mod( 'oaldr_mailgun_domain' );
+		$mg_main_list 	= get_theme_mod( 'oaldr_mailgun_main_list' );
 		if ( $position_email ) {
 			if ( ! in_array( $position_email, $lists ) ) {
 				$this->mailgun->create_list( $position_email, $title );
 			}
-			$this->mailgun->add_list_member( 'lec@list.tahosalodge.org', $position_email, $title );
+			$this->mailgun->add_list_member( $mg_main_list, $position_email, $title );
+		}
+		if ( $copied_emails ) {
+			foreach ( $copied_emails as $recipient ) {
+				$this->mailgun->add_list_member( $position_email, $recipient['email'], $recipient['name'] );
+			}
 		}
 		if ( $person ) {
 			$person_email = get_field( 'person_email', $person );
