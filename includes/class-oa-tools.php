@@ -168,8 +168,8 @@ class OA_Tools {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $plugin_admin, 'acf_json_save_point' );
 		$this->loader->add_action( 'init', $plugin_admin, 'acf_json_load_point' );
-		$this->loader->add_action( 'save_post', $oatools_mailgun, 'position_save_action' );
-		$this->loader->add_action( 'save_post', $oatools_mailgun, 'person_save_action' );
+		$this->loader->add_action( 'save_post', $plugin_admin, 'position_save_action' );
+		$this->loader->add_action( 'save_post', $plugin_admin, 'person_save_action' );
 
 	}
 
