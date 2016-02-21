@@ -128,6 +128,11 @@ class OA_Tools {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-oa-tools-mailgun.php';
 
+		/**
+		 * Class responsible for interfacing with the Slack API
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-oa-tools-slack.php';
+
 		$this->content_types = new OA_Tools_Content_Types();
 		$this->loader = new OA_Tools_Loader();
 

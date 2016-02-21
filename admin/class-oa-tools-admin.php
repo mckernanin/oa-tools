@@ -15,8 +15,7 @@
  *
  * @author     Kevin McKernan <kevin@mckernan.in>
  */
-class OA_Tools_Admin
-{
+class OA_Tools_Admin {
 	/**
 	 * The ID of this plugin.
 	 *
@@ -45,6 +44,15 @@ class OA_Tools_Admin
 	public $mailgun;
 
 	/**
+	 * An instance of OA_Tools_Slack.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @var class An instance of OA_Tools_Slack
+	 */
+	public $slack;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -54,8 +62,9 @@ class OA_Tools_Admin
 	 */
 	public function __construct( $plugin_name, $version ) {
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
-		$this->mailgun = new OA_Tools_Mailgun();
+		$this->version     = $version;
+		$this->mailgun     = new OA_Tools_Mailgun();
+		$this->slack       = new OA_Tools_Slack();
 		require_once plugin_dir_path( __FILE__ ) . 'acf-fields.php';
 	}
 
@@ -138,9 +147,15 @@ class OA_Tools_Admin
 	 * to the position list.
 	 *
 	 * @since 1.0.0
-	 * @param int $post_id Post ID from save hook.
+	 * @param int  $post_id The post ID.
+	 * @param post $post The post object.
+	 * @param bool $updated Whether this is an existing post being updated or not.
 	 */
-	public function position_save_action( $post_id ) {
+	public function position_save_action( $post_id, $post, $updated ) {
+		$slug = 'oaldr_position	';
+		if ( $slug !== $post->post_type ) {
+	        return;
+	    }
 		$position_email = get_field( 'position_email', $post_id );
 		$person 		= get_field( 'person', $post_id );
 		$copied_emails 	= get_field( 'copied_emails', $post_id );
@@ -185,19 +200,25 @@ class OA_Tools_Admin
 	 * specified list.
 	 *
 	 * @since 1.0.0
-	 * @param int $post_id Post ID from save hook.
+	 * @param int  $post_id The post ID.
+	 * @param post $post The post object.
+	 * @param bool $updated Whether this is an existing post being updated or not.
 	 */
-	public function person_save_action( $post_id ) {
-		$fname = get_field( 'first_name', $post_id );
-		$lname = get_field( 'last_name', $post_id );
+	public function person_save_action( $post_id, $post, $updated ) {
+		$slug = 'oaldr_person';
+		if ( $slug !== $post->post_type ) {
+	        return;
+	    }
+		$fname        = get_field( 'first_name', $post_id );
+		$lname        = get_field( 'last_name', $post_id );
 		$person_email = get_field( 'person_email', $post_id );
 		$parent_email = get_field( 'parent_email', $post_id );
-		$title = get_the_title();
+		$title        = get_the_title();
 		if ( $person_email ) {
 			$options = array(
-				'post_type' => 'oaldr_position',
+				'post_type'      => 'oaldr_position',
 				'posts_per_page' => 50,
-				'meta_query' => array(
+				'meta_query'     => array(
 					array(
 					  'key' 	=> 'person',
 					  'value' 	=> $post_id,
@@ -206,11 +227,14 @@ class OA_Tools_Admin
 				),
 			);
 			$query = new WP_Query( $options );
-			foreach ( $query->posts as $post ) {
-				$position_email = get_field( 'position_email', $post->id );
-				$inList = $this->mailgun->check_list_for_member( $position_email, $person_email );
-				if ( ! $inList ) {
-					$this->mailgun->add_list_member( $position_email, $person_email, $fname.' '.$lname );
+			if ( $query->has_posts() ) {
+				// $slack_invite = $this->slack->invite_member( $post_id, $fname, $lname, $person_email );
+				foreach ( $query->posts as $post ) {
+					$position_email = get_field( 'position_email', $post->id );
+					$inList         = $this->mailgun->check_list_for_member( $position_email, $person_email );
+					if ( ! $inList ) {
+						$this->mailgun->add_list_member( $position_email, $person_email, $fname.' '.$lname );
+					}
 				}
 			}
 		}

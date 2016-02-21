@@ -91,7 +91,7 @@ class OA_Tools_Public {
 		wp_register_script( 'mixitup', 'https://cdnjs.cloudflare.com/ajax/libs/mixitup/2.1.11/jquery.mixitup.min.js', true );
 	}
 	/**
-	 * Register the JavaScript for the public-facing side of the site.
+	 * Register the customizer settings.
 	 *
 	 * @since    1.0.0
 	 * @param object $wp_customize The $wp_customize object.
@@ -101,39 +101,6 @@ class OA_Tools_Public {
 			'title' 	=> __( 'OA Leadership Settings', 'oaldr' ),
 			'priority' 	=> 30,
 		));
-
-		$wp_customize->add_setting( 'oaldr_mailgun_api_key', array(
-	        'default' => '',
-	    ));
-
-		$wp_customize->add_control( 'oaldr_mailgun_api_key', array(
-	        'label' 	=> 'Mailgun API Key',
-	        'section' 	=> 'oaldr_settings',
-	        'type' 		=> 'text',
-			'settings' 	=> 'oaldr_mailgun_api_key',
-	    ));
-
-		$wp_customize->add_setting( 'oaldr_mailgun_domain', array(
-	        'default' => '',
-	    ));
-
-		$wp_customize->add_control( 'oaldr_mailgun_domain', array(
-	        'label' 	=> 'Mailgun Domain',
-	        'section' 	=> 'oaldr_settings',
-	        'type' 		=> 'text',
-			'settings' 	=> 'oaldr_mailgun_domain',
-	    ));
-
-		$wp_customize->add_setting( 'oaldr_mailgun_main_list', array(
-	        'default' => '',
-	    ));
-
-		$wp_customize->add_control( 'oaldr_mailgun_main_list', array(
-	        'label' 	=> 'Mailgun Main List',
-	        'section' 	=> 'oaldr_settings',
-	        'type' 		=> 'text',
-			'settings' 	=> 'oaldr_mailgun_main_list',
-	    ));
 
 		$wp_customize->add_setting( 'oaldr_headshot_default', array(
 			'default' 	=> '',
@@ -170,6 +137,61 @@ class OA_Tools_Public {
 				'oaldr_section' => __( 'Section', 'OA Tools Plugin' ),
 			),
 		));
+
+		$wp_customize->add_setting( 'oaldr_mailgun_api_key', array(
+	        'default' => '',
+	    ));
+
+		$wp_customize->add_control( 'oaldr_mailgun_api_key', array(
+	        'label' 	=> 'Mailgun API Key',
+	        'section' 	=> 'oaldr_settings',
+	        'type' 		=> 'text',
+			'settings' 	=> 'oaldr_mailgun_api_key',
+	    ));
+
+		$wp_customize->add_setting( 'oaldr_mailgun_domain', array(
+	        'default' => '',
+	    ));
+
+		$wp_customize->add_control( 'oaldr_mailgun_domain', array(
+	        'label' 	=> 'Mailgun Domain',
+	        'section' 	=> 'oaldr_settings',
+	        'type' 		=> 'text',
+			'settings' 	=> 'oaldr_mailgun_domain',
+	    ));
+
+		$wp_customize->add_setting( 'oaldr_mailgun_main_list', array(
+	        'default' => '',
+	    ));
+
+		$wp_customize->add_control( 'oaldr_mailgun_main_list', array(
+	        'label' 	=> 'Mailgun Main List',
+	        'section' 	=> 'oaldr_settings',
+	        'type' 		=> 'text',
+			'settings' 	=> 'oaldr_mailgun_main_list',
+	    ));
+
+		$wp_customize->add_setting( 'oaldr_slack_api_key', array(
+	        'default' => '',
+	    ));
+
+		$wp_customize->add_control( 'oaldr_slack_api_key', array(
+	        'label' 	=> 'Slack API Key',
+	        'section' 	=> 'oaldr_settings',
+	        'type' 		=> 'text',
+			'settings' 	=> 'oaldr_slack_api_key',
+	    ));
+
+		$wp_customize->add_setting( 'oaldr_slack_subdomain', array(
+	        'default' => '',
+	    ));
+
+		$wp_customize->add_control( 'oaldr_slack_subdomain', array(
+	        'label' 	=> 'Slack Subdomain',
+	        'section' 	=> 'oaldr_settings',
+	        'type' 		=> 'text',
+			'settings' 	=> 'oaldr_slack_subdomain',
+	    ));
 	}
 	/**
 	 * Register the JavaScript for the public-facing side of the site.

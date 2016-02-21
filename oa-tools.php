@@ -8,14 +8,14 @@
  * that starts the plugin.
  *
  * @link              http://mckernan.in
- * @since             1.0.0
+ * @since             1.1.0
  * @package           OA_Tools
  *
  * @wordpress-plugin
  * Plugin Name:       Order of the Arrow Tools
  * Plugin URI:        http://mckernan.in/plugins/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.0
+ * Description:       A plugin of tools for Order of the Arrow focused websites.
+ * Version:           1.1.0
  * Author:            Kevin McKernan
  * Author URI:        http://mckernan.in
  * License:           GPL-2.0+
