@@ -3,7 +3,7 @@
 
 	var $positions = $('.oaldr-positions');
 	if ( $positions.length ) {
-		$('.oaldr-positions').mixItUp({
+		$positions.mixItUp({
 			selectors: {
 				target: '.oaldr-position'
 			},

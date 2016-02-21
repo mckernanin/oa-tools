@@ -23,9 +23,6 @@
 	$query 				= new WP_Query( $options );
 
 	if ( $query->have_posts() ) {
-		wp_enqueue_script( 'mixitup' );
-		wp_enqueue_script( 'oa-tools-public' );
-		wp_enqueue_style( 'oaldr-styles' );
 		?>
 
 	<section class="oaldr-positions">
@@ -43,17 +40,20 @@
 			$thumb_src = get_theme_mod( 'oaldr_headshot_default' );
 		}
 
-		$first_name        		= get_field( 'first_name', $person );
-		$last_name            	= get_field( 'last_name', $person );
-		$youth_or_adviser    	= get_field( 'youth_or_adviser', $person );
-		$taxonomy_array    		= wp_get_post_terms( $person, $selected_taxonomy );
-		var_dump( $taxonomy_array );
-		$taxonomy            	= $taxonomy_array[0];
-		$membership_level    	= get_field( 'membership_level', $person );
-		$phone_number        	= get_field( 'phone_number', $person );
-		$last_initial_only    	= get_field( 'last_initial_only', $person );
-		$group                	= wp_get_post_terms( get_the_id(), 'oaldr_group' );
-		$css_classes 			= array( 'oaldr-position', 'group-' . strtolower( $group[0]->slug ) );
+		$first_name        = get_field( 'first_name', $person );
+		$last_name         = get_field( 'last_name', $person );
+		$youth_or_adviser  = get_field( 'youth_or_adviser', $person );
+		$taxonomy_array    = wp_get_post_terms( $person, $selected_taxonomy );
+		$taxonomy          = current( $taxonomy_array );
+		$membership_level  = get_field( 'membership_level', $person );
+		$phone_number      = get_field( 'phone_number', $person );
+		$last_initial_only = get_field( 'last_initial_only', $person );
+		$group             = current( wp_get_post_terms( get_the_id(), 'oaldr_group' ) );
+		$available         = get_field( 'is_position_available' );
+		$css_classes       = array( 'oaldr-position' );
+		if ( ! empty( $group ) ) {
+			$css_classes[] = 'group-' . strtolower( $group->slug );
+		}
 
 		if ( get_field( 'position_email' ) ) {
 			$email = get_field( 'position_email' );
@@ -61,7 +61,7 @@
 			$email = get_field( 'person_email', $person );
 		}
 
-		if ( true === get_field( 'is_position_available' ) ) {
+		if ( true === $available ) {
 			$css_classes[] = 'open';
 		}
 

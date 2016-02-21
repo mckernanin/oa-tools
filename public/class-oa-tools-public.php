@@ -67,7 +67,7 @@ class OA_Tools_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ).'css/oa-tools-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( 'oa-tools-public-css', plugin_dir_url( __FILE__ ).'css/oa-tools-public.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -87,8 +87,8 @@ class OA_Tools_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		wp_register_script( 'oa-tools-public', plugin_dir_url( __FILE__ ) . 'js/oa-tools-public.js', array( 'jquery' ), $this->version, false );
-		wp_register_script( 'mixitup', 'https://cdnjs.cloudflare.com/ajax/libs/mixitup/2.1.11/jquery.mixitup.min.js', true );
+		wp_register_script( 'oa-tools-public-js', plugin_dir_url( __FILE__ ) . 'js/oa-tools-public.js', array( 'jquery', 'mixitup' ), $this->version, false );
+		wp_register_script( 'mixitup', 'https://cdnjs.cloudflare.com/ajax/libs/mixitup/2.1.11/jquery.mixitup.min.js' );
 	}
 	/**
 	 * Register the customizer settings.
@@ -194,7 +194,7 @@ class OA_Tools_Public {
 	    ));
 	}
 	/**
-	 * Register the JavaScript for the public-facing side of the site.
+	 * Register the shortcode for the leadership position filter.
 	 *
 	 * @since    1.0.0
 	 * @param array $atts Shortcode attributes.
@@ -206,13 +206,15 @@ class OA_Tools_Public {
 		return $shortcode_output;
 	}
 	/**
-	 * Register the JavaScript for the public-facing side of the site.
+	 * Register the shortcode for the leadership position grid.
 	 *
 	 * @since    1.0.0
 	 * @param array $atts Shortcode attributes.
 	 */
 	public function shortcode_leadership_position_grid( $atts ) {
 		ob_start();
+		wp_enqueue_script( 'oa-tools-public-js' );
+		wp_enqueue_style( 'oa-tools-public-css' );
 		include( 'partials/shortcode-leadership-position-grid.php' );
 		$shortcode_output = ob_get_clean();
 		return $shortcode_output;
