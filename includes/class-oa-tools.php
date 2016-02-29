@@ -165,16 +165,13 @@ class OA_Tools {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new OA_Tools_Admin( $this->get_plugin_name(), $this->get_version() );
-		if ( ! empty( get_theme_mod( 'oaldr_mailgun_api_key' ) ) ) {
-			$oatools_mailgun = new OA_Tools_Mailgun();
-		}
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_filter( 'acf/settings/save_json', $plugin_admin, 'acf_json_save_point' );
 		$this->loader->add_filter( 'acf/settings/load_json', $plugin_admin, 'acf_json_load_point' );
-		$this->loader->add_action( 'save_post', $plugin_admin, 'position_save_action' );
-		$this->loader->add_action( 'save_post', $plugin_admin, 'person_save_action' );
+		$this->loader->add_action( 'save_post', $plugin_admin, 'position_save_action', 10, 3 );
+		$this->loader->add_action( 'save_post', $plugin_admin, 'person_save_action', 10, 3 );
 
 	}
 
