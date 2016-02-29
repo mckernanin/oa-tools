@@ -13,10 +13,13 @@
 	), $atts);
 
 	$options = array(
-	  'post_type' 		=> $atts['type'],
-	  'order' 			=> $atts['order'],
-	  'orderby' 		=> $atts['orderby'],
-	  'posts_per_page' 	=> $atts['posts'],
+		'post_type'      => $atts['type'],
+		'order'          => $atts['order'],
+		'orderby'        => $atts['orderby'],
+		'posts_per_page' => $atts['posts'],
+		'meta_key'     => 'position_status',
+		'meta_value'   => 'hidden',
+		'meta_compare' => '!=',
 	);
 
 	$selected_taxonomy 	= get_theme_mod( 'oaldr_categorize_positions' );
@@ -30,7 +33,7 @@
 	<?php
 	while ( $query->have_posts() ) : $query->the_post();
 
-		$person = get_field( 'person' )[0];
+		$person = current( get_field( 'person' ) );
 
 		$thumb_src = null;
 		if ( has_post_thumbnail( $person ) ) {
