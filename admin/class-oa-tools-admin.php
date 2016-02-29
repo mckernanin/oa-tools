@@ -152,7 +152,7 @@ class OA_Tools_Admin {
 	 * @param bool $updated Whether this is an existing post being updated or not.
 	 */
 	public function position_save_action( $post_id, $post, $updated ) {
-		$slug = 'oaldr_position	';
+		$slug = 'oaldr_position';
 		if ( $slug !== $post->post_type ) {
 	        return;
 	    }

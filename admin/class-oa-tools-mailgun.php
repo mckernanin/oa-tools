@@ -32,7 +32,22 @@ class OA_Tools_Mailgun {
 	 * @param string $message Text/HTML content of the error message.
 	 */
 	public function error_message( $message ) {
-		echo '<div class="error notice">';
+		echo '<div class="notice notice-error">';
+		echo '<p>';
+		esc_html_e( 'OA Tools - ' . $message, 'oa_tools' );
+		echo '</p>';
+		echo '</div>';
+	}
+
+	/**
+	 * Display a WordPress Dashboard success message.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $message Text/HTML content of the error message.
+	 */
+	public function success_message( $message ) {
+		echo '<div class="notice notice-success">';
 		echo '<p>';
 		esc_html_e( 'OA Tools - ' . $message, 'oa_tools' );
 		echo '</p>';
@@ -135,7 +150,7 @@ class OA_Tools_Mailgun {
 				$this->error_message( 'The following error occured when trying to add '.$address.' to '.$listAddress.': '.$e->getMessage() );
 			}
 		} else {
-			return 'Address is already present in list.';
+			$this->success_message( 'Address' . $address . ' is already present in list ' . $listAddress . '.' );
 		}
 	}
 
