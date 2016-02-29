@@ -231,10 +231,7 @@ class OA_Tools_Admin {
 				$slack_invite = $this->slack->invite_member( $post_id, $fname, $lname, $person_email );
 				foreach ( $query->posts as $post ) {
 					$position_email = get_field( 'position_email', $post->id );
-					$inList         = $this->mailgun->check_list_for_member( $position_email, $person_email );
-					if ( ! $inList ) {
-						$this->mailgun->add_list_member( $position_email, $person_email, $fname.' '.$lname );
-					}
+					$this->mailgun->add_list_member( $position_email, $person_email, $fname.' '.$lname );
 				}
 			}
 		}

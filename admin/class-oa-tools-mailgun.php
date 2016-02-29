@@ -120,17 +120,22 @@ class OA_Tools_Mailgun {
 	 * @param string $name A description for $address.
 	 */
 	public function add_list_member( $listAddress, $address, $name ) {
-		try {
-			// Instantiate the client.
-			 $mgClient = new Mailgun( MAILGUN_API_KEY );
-			 // Issue the call to the client.
-			 $result = $mgClient->post("lists/$listAddress/members", array(
-				 'address' => $address,
-				 'name' => $name,
-			 ));
-			 return $result;
-		} catch ( Exception $e ) {
-			$this->error_message( 'The following error occured when trying to add '.$address.' to '.$listAddress.': '.$e->getMessage() );
+		$inList = $this->check_list_for_member( $listAddress, $address );
+		if (! $inList) {
+			try {
+				// Instantiate the client.
+				 $mgClient = new Mailgun( MAILGUN_API_KEY );
+				 // Issue the call to the client.
+				 $result = $mgClient->post("lists/$listAddress/members", array(
+					 'address' => $address,
+					 'name' => $name,
+				 ));
+				 return $result;
+			} catch ( Exception $e ) {
+				$this->error_message( 'The following error occured when trying to add '.$address.' to '.$listAddress.': '.$e->getMessage() );
+			}
+		} else {
+			return 'Address is already present in list.';
 		}
 	}
 
