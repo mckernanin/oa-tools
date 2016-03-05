@@ -35,6 +35,15 @@ class OA_Tools_Admin {
 	private $version;
 
 	/**
+	 * An instance of OA_Tools_Slack.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @var class An instance of OA_Tools_Slack
+	 */
+	public $slack;
+
+	/**
 	 * An instance of OA_Tools_Mailgun.
 	 *
 	 * @since    1.0.0
@@ -44,13 +53,31 @@ class OA_Tools_Admin {
 	public $mailgun;
 
 	/**
-	 * An instance of OA_Tools_Slack.
+	 * Mailgun API Key
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.0
 	 *
-	 * @var class An instance of OA_Tools_Slack
+	 * @var string Mailgun API Key
 	 */
-	public $slack;
+	public $mailgun_api_key;
+
+	/**
+	 * Mailgun Domain
+	 *
+	 * @since    1.1.0
+	 *
+	 * @var string Mailgun Domain
+	 */
+	public $mailgun_domain;
+
+	/**
+	 * Mailgun Main List
+	 *
+	 * @since    1.1.0
+	 *
+	 * @var string Mailgun Main List
+	 */
+	public $mailgun_main_list;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -61,10 +88,13 @@ class OA_Tools_Admin {
 	 * @param string $version     The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
-		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
-		$this->mailgun     = new OA_Tools_Mailgun();
-		$this->slack       = new OA_Tools_Slack();
+		$this->plugin_name          = $plugin_name;
+		$this->version              = $version;
+		$this->mailgun              = new OA_Tools_Mailgun();
+		$this->slack                = new OA_Tools_Slack();
+		$this->mailgun_api_key      = get_theme_mod( 'oaldr_mailgun_api_key' );
+		$this->mailgun_domain       = get_theme_mod( 'oaldr_mailgun_domain' );
+		$this->mailgun_primary_list = get_theme_mod( 'oaldr_mailgun_main_list' );
 		require_once plugin_dir_path( __FILE__ ) . 'acf-fields.php';
 	}
 
@@ -162,8 +192,8 @@ class OA_Tools_Admin {
 		$person 		= $person[0];
 		$title 			= get_the_title();
 		$lists 			= $this->mailgun->get_lists();
-		$mg_domain 		= get_theme_mod( 'oaldr_mailgun_domain' );
-		$mg_main_list 	= get_theme_mod( 'oaldr_mailgun_main_list' );
+		$mg_domain 		= $this->oaldr_mailgun_domain;
+		$mg_main_list 	= $this->oaldr_mailgun_main_list;
 		if ( $position_email ) {
 			if ( ! in_array( $position_email, $lists ) ) {
 				$this->mailgun->create_list( $position_email, $title );
@@ -176,11 +206,11 @@ class OA_Tools_Admin {
 			}
 		}
 		if ( $person ) {
-			$person_email = get_field( 'person_email', $person );
-			$fname = get_field( 'first_name', $person );
-			$lname = get_field( 'last_name', $person );
+			$person_email         = get_field( 'person_email', $person );
+			$fname                = get_field( 'first_name', $person );
+			$lname                = get_field( 'last_name', $person );
 			$copied_emails_person = get_field( 'copied_emails', $person );
-			$inList = $this->mailgun->check_list_for_member( $position_email, $person_email );
+			$inList               = $this->mailgun->check_list_for_member( $position_email, $person_email );
 			if ( ! $inList ) {
 				$this->mailgun->add_list_member( $position_email, $person_email, $fname.' '.$lname );
 			}
