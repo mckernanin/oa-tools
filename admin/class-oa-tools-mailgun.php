@@ -110,15 +110,17 @@ class OA_Tools_Mailgun {
 	 *
 	 * @param string $address The email address of the list to create.
 	 * @param string $description A title for $address.
+	 * @param string $access_level Define the access level for the list, options are: readonly, members, everyone.
 	 */
-	public function create_list( $address, $description ) {
+	public function create_list( $address, $description, $access_level = 'everyone' ) {
 		try {
 			// Instantiate the client.
 			$mgClient = new Mailgun( MAILGUN_API_KEY );
 			// Issue the call to the client.
 			$result = $mgClient->post( 'lists', array(
-				'address' => $address,
-				'description' => $description,
+				'address'      => $address,
+				'description'  => $description,
+				'access_level' => $access_level,
 			));
 		} catch ( Exception $e ) {
 			$this->error_message( 'The following error occured when trying to create '.$address.': '.$e->getMessage() );
@@ -136,14 +138,14 @@ class OA_Tools_Mailgun {
 	 */
 	public function add_list_member( $listAddress, $address, $name ) {
 		$inList = $this->check_list_for_member( $listAddress, $address );
-		if (! $inList) {
+		if ( ! $inList ) {
 			try {
 				// Instantiate the client.
 				 $mgClient = new Mailgun( MAILGUN_API_KEY );
 				 // Issue the call to the client.
 				 $result = $mgClient->post("lists/$listAddress/members", array(
 					 'address' => $address,
-					 'name' => $name,
+					 'name'    => $name,
 				 ));
 				 return $result;
 			} catch ( Exception $e ) {
