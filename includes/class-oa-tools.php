@@ -170,6 +170,7 @@ class OA_Tools {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		add_action( 'save_post', array( $plugin_admin, 'person_save_action' ), 10, 3 );
 		add_action( 'save_post', array( $plugin_admin, 'position_save_action' ), 10, 3 );
+		add_action( 'customize_save_after', array( $plugin_admin, 'customize_save_action' ), 10, 3 );
 	}
 
 	/**

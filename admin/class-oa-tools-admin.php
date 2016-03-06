@@ -213,4 +213,13 @@ class OA_Tools_Admin {
 			}
 		}
 	}
+
+	public function customize_save() {
+		$mailgun_api_key      = get_theme_mod( 'oaldr_mailgun_api_key' );
+		$mailgun_domain       = get_theme_mod( 'oaldr_mailgun_domain' );
+		$mailgun_main_list = get_theme_mod( 'oaldr_mailgun_main_list' );
+		if ( $mailgun_domain && $mailgun_api_key && $mailgun_main_list ) {
+			$this->mailgun->create_list( $mailgun_main_list, 'Main List' );
+		}
+	}
 }

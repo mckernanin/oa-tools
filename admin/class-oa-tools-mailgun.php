@@ -54,6 +54,13 @@ class OA_Tools_Mailgun {
 		echo '</div>';
 	}
 
+	public function custom_log( $message ) {
+		$filename = plugin_dir_path( dirname( __FILE__ ) ) . 'includes/mailgun-api/mailgun.log';
+		if ( touch ( $filename ) ) {
+			error_log( $message, 3, $filename );
+		}
+	}
+
 	/**
 	 * Get an array of members in a list from the Mailgun API
 	 *
@@ -74,9 +81,10 @@ class OA_Tools_Mailgun {
 			foreach ( $result->http_response_body->items as $member ) {
 				$addresses[] = $member->address;
 			}
+			$this->custom_log( 'get_list_members(): ' . $listAddress );
 			return $addresses;
 		} catch ( Exception $e ) {
-			$this->error_message( 'The following error occured when trying to retrieve members from '.$listAddress.': '.$e->getMessage() );
+			$this->custom_log( 'The following error occured when trying to retrieve members from '.$listAddress.': '.$e->getMessage() );
 		}
 	}
 
@@ -97,9 +105,10 @@ class OA_Tools_Mailgun {
 			foreach ( $result->http_response_body->items as $list ) {
 				$lists[] = $list->address;
 			}
+			$this->custom_log( 'get_lists() ran');
 			return $lists;
 		} catch ( Exception $e ) {
-			$this->error_message( 'The following error occured when trying to retrieve lists: '.$e->getMessage() );
+			$this->custom_log( 'The following error occured when trying to retrieve lists: '.$e->getMessage() );
 		}
 	}
 
@@ -122,8 +131,9 @@ class OA_Tools_Mailgun {
 				'description'  => $description,
 				'access_level' => $access_level,
 			));
+			$this->custom_log( 'create_list(): ' . $address );
 		} catch ( Exception $e ) {
-			$this->error_message( 'The following error occured when trying to create '.$address.': '.$e->getMessage() );
+			$this->custom_log( 'The following error occured when trying to create '.$address.': '.$e->getMessage() );
 		}
 	}
 
@@ -147,12 +157,13 @@ class OA_Tools_Mailgun {
 					 'address' => $address,
 					 'name'    => $name,
 				 ));
+				 $this->custom_log( 'add_list_member(): ' . $listAddress . ' | ' . $address );
 				 return $result;
 			} catch ( Exception $e ) {
-				$this->error_message( 'The following error occured when trying to add '.$address.' to '.$listAddress.': '.$e->getMessage() );
+				$this->custom_log( 'The following error occured when trying to add '.$address.' to '.$listAddress.': '.$e->getMessage() );
 			}
 		} else {
-			$this->success_message( 'Address' . $address . ' is already present in list ' . $listAddress . '.' );
+			$this->custom_log( 'Address' . $address . ' is already present in list ' . $listAddress . '.' );
 		}
 	}
 
@@ -173,9 +184,10 @@ class OA_Tools_Mailgun {
 
 			// Issue the call to the client.
 			$result = $mgClient->get( "lists/$listAddress/members/$address", array() );
+			$this->custom_log( 'check_list_for_member(): ' . $listAddress . ' | ' . $address );
 			return true;
 		} catch ( Exception $e ) {
-			$this->error_message( 'Address does not exist in list' );
+			$this->custom_log( 'Address does not exist in list ' . $address );
 			return false;
 		}
 	}
