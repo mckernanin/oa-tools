@@ -57,6 +57,7 @@ class OA_Tools_Mailgun {
 	public function custom_log( $message ) {
 		$filename = plugin_dir_path( dirname( __FILE__ ) ) . 'includes/mailgun-api/mailgun.log';
 		if ( touch ( $filename ) ) {
+			$message = $message . '\n';
 			error_log( $message, 3, $filename );
 		}
 	}
