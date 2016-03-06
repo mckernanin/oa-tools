@@ -104,18 +104,6 @@ class OA_Tools_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-		/*
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in OA_Tools_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The OA_Tools_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ).'css/oa-tools-admin.css', array(), $this->version, 'all' );
 	}
 
@@ -125,47 +113,7 @@ class OA_Tools_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		/*
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in OA_Tools_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The OA_Tools_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ).'js/oa-tools-admin.js', array( 'jquery' ), $this->version, false );
-	}
-
-	/**
-	 * Export ACF Fields to JSON.
-	 *
-	 * @param string $path ACF Save path.
-	 */
-	public function acf_json_save_point( $path ) {
-
-		// Update path.
-		$path = plugin_dir_path( __FILE__ ) . '/admin/acf-json';
-
-		// Return.
-		return $path;
-	}
-
-	/**
-	 * Import ACF Fields from JSON.
-	 *
-	 * @param string $paths ACF Save path.
-	 */
-	public function acf_json_load_point( $paths ) {
-
-		// Append path.
-		$paths[] = plugin_dir_path( __FILE__ ) . '/admin/acf-json';
-
-		// Return.
-		return $paths;
 	}
 
 	/**
@@ -187,9 +135,8 @@ class OA_Tools_Admin {
 	        return;
 	    }
 		$position_email = get_field( 'position_email', $post_id );
-		$person 		= get_field( 'person', $post_id );
+		$person 		= current( get_field( 'person', $post_id ) );
 		$copied_emails 	= get_field( 'copied_emails', $post_id );
-		$person 		= $person[0];
 		$title 			= get_the_title();
 		$lists 			= $this->mailgun->get_lists();
 		$mg_domain 		= $this->oaldr_mailgun_domain;
