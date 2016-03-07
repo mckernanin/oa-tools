@@ -88,13 +88,13 @@ class OA_Tools_Admin {
 	 * @param string $version     The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
-		$this->plugin_name          = $plugin_name;
-		$this->version              = $version;
-		$this->mailgun              = new OA_Tools_Mailgun();
-		$this->slack                = new OA_Tools_Slack();
-		$this->mailgun_api_key      = get_theme_mod( 'oaldr_mailgun_api_key' );
-		$this->mailgun_domain       = get_theme_mod( 'oaldr_mailgun_domain' );
-		$this->mailgun_primary_list = get_theme_mod( 'oaldr_mailgun_main_list' );
+		$this->plugin_name       = $plugin_name;
+		$this->version           = $version;
+		$this->mailgun           = new OA_Tools_Mailgun();
+		$this->slack             = new OA_Tools_Slack();
+		$this->mailgun_api_key   = get_theme_mod( 'oaldr_mailgun_api_key' );
+		$this->mailgun_domain    = get_theme_mod( 'oaldr_mailgun_domain' );
+		$this->mailgun_main_list = get_theme_mod( 'oaldr_mailgun_main_list' );
 		require_once plugin_dir_path( __FILE__ ) . 'acf-fields.php';
 	}
 
