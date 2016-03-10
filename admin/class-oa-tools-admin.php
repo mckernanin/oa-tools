@@ -145,7 +145,8 @@ class OA_Tools_Admin {
 			if ( ! in_array( $position_email, $lists ) ) {
 				$this->mailgun->create_list( $position_email, $title );
 			}
-			$this->mailgun->add_list_member( $mg_main_list, $position_email, $title );
+			$this->mailgun->add_list_member( $this->oaldr_mailgun_main_list, $position_email, $title );
+			$this->mailgun->custom_log( 'Main list:' . $this->oaldr_mailgun_main_list );
 		}
 		if ( $copied_emails ) {
 			foreach ( $copied_emails as $recipient ) {

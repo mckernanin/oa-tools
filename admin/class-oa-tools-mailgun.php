@@ -188,7 +188,7 @@ class OA_Tools_Mailgun {
 			$this->custom_log( 'check_list_for_member(): ' . $listAddress . ' | ' . $address );
 			return true;
 		} catch ( Exception $e ) {
-			$this->custom_log( 'Address does not exist in list ' . $address );
+			$this->custom_log( 'Address ' . $address . ' does not exist in list ' . $listAddress );
 			return false;
 		}
 	}
