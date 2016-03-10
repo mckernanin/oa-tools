@@ -139,14 +139,12 @@ class OA_Tools_Admin {
 		$copied_emails 	= get_field( 'copied_emails', $post_id );
 		$title 			= get_the_title();
 		$lists 			= $this->mailgun->get_lists();
-		$mg_domain 		= $this->oaldr_mailgun_domain;
-		$mg_main_list 	= $this->oaldr_mailgun_main_list;
 		if ( $position_email ) {
 			if ( ! in_array( $position_email, $lists ) ) {
 				$this->mailgun->create_list( $position_email, $title );
 			}
-			$this->mailgun->add_list_member( $this->oaldr_mailgun_main_list, $position_email, $title );
-			$this->mailgun->custom_log( 'Main list:' . $this->oaldr_mailgun_main_list );
+			$this->mailgun->add_list_member( $this->mailgun_main_list, $position_email, $title );
+			$this->mailgun->custom_log( 'Main list:' . $this->mailgun_main_list );
 		}
 		if ( $copied_emails ) {
 			foreach ( $copied_emails as $recipient ) {
