@@ -7,21 +7,37 @@
  * @package		OA Tools
  */
 
-// define( 'SLACK_API_KEY', get_theme_mod( 'oaldr_slack_api_key' ) );
-define( 'SLACK_API_KEY', 'xoxp-4251395768-16936426437-22131195252-2bcb15d9f9' );
-// define( 'SLACK_SUBDOMAIN', get_theme_mod( 'oaldr_slack_subdomain' ) );
-define( 'SLACK_SUBDOMAIN', 'tahosa383' );
-
 /**
  * Class responsible for interfacing with the Mailgun API.
  */
 class OA_Tools_Slack {
+
+	/**
+	 * Slack API Key
+	 *
+	 * @since    1.1.0
+	 *
+	 * @var string Slack API Key
+	 */
+	public $slack_api_key;
+
+	/**
+	 * Slack Domain
+	 *
+	 * @since    1.1.0
+	 *
+	 * @var string Slack Domain
+	 */
+	public $slack_domain;
+
 	/**
 	 * Constructor.
 	 *
 	 * @since    1.0.0
 	 */
 	public function __construct() {
+		$this->$slack_api_key = get_theme_mod( 'oaldr_slack_api_key' );
+		$this->$slack_domain  = get_theme_mod( 'oaldr_slack_subdomain' );
 	}
 
 	/**
@@ -54,13 +70,13 @@ class OA_Tools_Slack {
 	public function invite_member( $post_id, $fname, $lname, $email ) {
 		$slack_created = get_post_meta( $post_id, '_slack_created' );
 		if ( ! $slack_created ) {
-			$url  = 'https://'.SLACK_SUBDOMAIN.'.slack.com/api/users.admin.invite?t='.time();
+			$url  = 'https://'. $this->$slack_domain .'.slack.com/api/users.admin.invite?t='.time();
 			$args = array(
 				'body' => array(
 					'email'      => $email,
 		            'first_name' => $fname,
 					'last_name'  => $lname,
-		            'token'      => SLACK_API_KEY,
+		            'token'      => $this->$slack_api_key,
 		            'set_active' => true,
 		            '_attempts'  => '1',
 				),
