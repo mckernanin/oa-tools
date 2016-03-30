@@ -156,15 +156,24 @@ class OA_Tools_Admin {
 			$fname                = get_field( 'first_name', $person );
 			$lname                = get_field( 'last_name', $person );
 			$copied_emails_person = get_field( 'copied_emails', $person );
-			$inList               = $this->mailgun->check_list_for_member( $position_email, $person_email );
-			if ( ! $inList ) {
-				$this->mailgun->add_list_member( $position_email, $person_email, $fname.' '.$lname );
+			$in_list              = $this->mailgun->check_list_for_member( $position_email, $person_email );
+			$addresses            = [];
+			if ( ! $in_list ) {
+				$addresses[] = [
+					'address' => $person_email,
+					'name'    => $fname.' '.$lname,
+				];
 			}
 			if ( $copied_emails_person ) {
 				foreach ( $copied_emails_person as $recipient ) {
-					$this->mailgun->add_list_member( $position_email, $recipient['email'], $recipient['name'] );
+					$addresses[] = [
+						'address' => $person_email,
+						'name'    => $fname.' '.$lname,
+					];
 				}
 			}
+			$addresses = json_encode($addresses);
+			$this->mailgun->add_array_list_members( $position_email, $addresses );
 		}
 	}
 
@@ -205,17 +214,24 @@ class OA_Tools_Admin {
 			$query = new WP_Query( $options );
 			if ( $query->has_posts() ) {
 				$slack_invite = $this->slack->invite_member( $post_id, $fname, $lname, $person_email );
+				$addresses = [];
 				foreach ( $query->posts as $post ) {
 					$position_email = get_field( 'position_email', $post->id );
-					$this->mailgun->add_list_member( $position_email, $person_email, $fname.' '.$lname );
+					// $this->mailgun->add_list_member( $position_email, $person_email, $fname.' '.$lname );
+					$addresses[] = [
+						'address' => $person_email,
+						'name'    => $fname.' '.$lname,
+					];
 				}
+				$addresses = json_encode( $addresses );
+				$this->mailgun->add_array_list_members( $position_email, $addresses );
 			}
 		}
 	}
 
 	public function customize_save() {
-		$mailgun_api_key      = get_theme_mod( 'oaldr_mailgun_api_key' );
-		$mailgun_domain       = get_theme_mod( 'oaldr_mailgun_domain' );
+		$mailgun_api_key   = get_theme_mod( 'oaldr_mailgun_api_key' );
+		$mailgun_domain    = get_theme_mod( 'oaldr_mailgun_domain' );
 		$mailgun_main_list = get_theme_mod( 'oaldr_mailgun_main_list' );
 		if ( $mailgun_domain && $mailgun_api_key && $mailgun_main_list ) {
 			$this->mailgun->create_list( $mailgun_main_list, 'Main List' );

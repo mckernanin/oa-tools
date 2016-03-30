@@ -56,7 +56,7 @@ class OA_Tools_Mailgun {
 
 	public function custom_log( $message ) {
 		$filename = plugin_dir_path( dirname( __FILE__ ) ) . 'includes/mailgun-api/mailgun.log';
-		if ( touch ( $filename ) ) {
+		if ( touch( $filename ) ) {
 			$message = $message . "\n";
 			error_log( $message, 3, $filename );
 		}
@@ -67,25 +67,25 @@ class OA_Tools_Mailgun {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $listAddress The full email address of a Mailgun list.
+	 * @param string $list_address The full email address of a Mailgun list.
 	 *
 	 * @return array
 	 */
-	public function get_list_members( $listAddress ) {
+	public function get_list_members( $list_address ) {
 		try {
 			// Instantiate the client.
-			$mgClient = new Mailgun( MAILGUN_API_KEY );
+			$mg_client = new Mailgun( MAILGUN_API_KEY );
 
 			// Issue the call to the client.
-			$result = $mgClient->get( "lists/$listAddress/members", array() );
+			$result = $mg_client->get( "lists/$list_address/members", array() );
 			$addresses = array();
 			foreach ( $result->http_response_body->items as $member ) {
 				$addresses[] = $member->address;
 			}
-			$this->custom_log( 'get_list_members(): ' . $listAddress );
+			$this->custom_log( 'get_list_members(): ' . $list_address );
 			return $addresses;
 		} catch ( Exception $e ) {
-			$this->custom_log( 'The following error occured when trying to retrieve members from '.$listAddress.': '.$e->getMessage() );
+			$this->custom_log( 'The following error occured when trying to retrieve members from '.$list_address.': '.$e->getMessage() );
 		}
 	}
 
@@ -99,14 +99,14 @@ class OA_Tools_Mailgun {
 	public function get_lists() {
 		try {
 			// Instantiate the client.
-			$mgClient = new Mailgun( MAILGUN_API_KEY );
+			$mg_client = new Mailgun( MAILGUN_API_KEY );
 			// Issue the call to the client.
-			$result = $mgClient->get( 'lists', array() );
+			$result = $mg_client->get( 'lists', array() );
 			$lists = array();
 			foreach ( $result->http_response_body->items as $list ) {
 				$lists[] = $list->address;
 			}
-			$this->custom_log( 'get_lists() ran');
+			$this->custom_log( 'get_lists() ran' );
 			return $lists;
 		} catch ( Exception $e ) {
 			$this->custom_log( 'The following error occured when trying to retrieve lists: '.$e->getMessage() );
@@ -125,9 +125,9 @@ class OA_Tools_Mailgun {
 	public function create_list( $address, $description, $access_level = 'everyone' ) {
 		try {
 			// Instantiate the client.
-			$mgClient = new Mailgun( MAILGUN_API_KEY );
+			$mg_client = new Mailgun( MAILGUN_API_KEY );
 			// Issue the call to the client.
-			$result = $mgClient->post( 'lists', array(
+			$result = $mg_client->post( 'lists', array(
 				'address'      => $address,
 				'description'  => $description,
 				'access_level' => $access_level,
@@ -143,28 +143,56 @@ class OA_Tools_Mailgun {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $listAddress The address of the list to add an address to.
-	 * @param string $address The email address to add to $listAddress.
+	 * @param string $list_address The address of the list to add an address to.
+	 * @param string $address The email address to add to $list_address.
 	 * @param string $name A description for $address.
 	 */
-	public function add_list_member( $listAddress, $address, $name ) {
-		$inList = $this->check_list_for_member( $listAddress, $address );
-		if ( ! $inList ) {
+	public function add_list_member( $list_address, $address, $name ) {
+		$in_list = $this->check_list_for_member( $list_address, $address );
+		if ( ! $in_list ) {
 			try {
 				// Instantiate the client.
-				 $mgClient = new Mailgun( MAILGUN_API_KEY );
+				 $mg_client = new Mailgun( MAILGUN_API_KEY );
 				 // Issue the call to the client.
-				 $result = $mgClient->post("lists/$listAddress/members", array(
+				 $result = $mg_client->post("lists/$list_address/members", array(
 					 'address' => $address,
 					 'name'    => $name,
 				 ));
-				 $this->custom_log( 'add_list_member(): ' . $listAddress . ' | ' . $address );
+				 $this->custom_log( 'add_list_member(): ' . $list_address . ' | ' . $address );
 				 return $result;
 			} catch ( Exception $e ) {
-				$this->custom_log( 'The following error occured when trying to add '.$address.' to '.$listAddress.': '.$e->getMessage() );
+				$this->custom_log( 'The following error occured when trying to add '.$address.' to '.$list_address.': '.$e->getMessage() );
 			}
 		} else {
-			$this->custom_log( 'Address' . $address . ' is already present in list ' . $listAddress . '.' );
+			$this->custom_log( 'Address' . $address . ' is already present in list ' . $list_address . '.' );
+		}
+	}
+
+	/**
+	 * Add an array of emails to a Mailgun list
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $list_address The address of the list to add addresses to.
+	 * @param array $array Array of emails to be JSON encoded.
+	 */
+	public function add_array_list_members( $list_address, $array ) {
+		if ( is_array( $array ) ) {
+			$json = json_encode( $array );
+			try {
+				// Instantiate the client.
+				 $mg_client = new Mailgun( MAILGUN_API_KEY );
+				 // Issue the call to the client.
+				 $result = $mg_client->post("lists/$list_address/members.json", array(
+					 'members' => $address,
+					 'upsert'  => 'true',
+				 ));
+				 return $result;
+			} catch ( Exception $e ) {
+				$this->custom_log( 'The following error occured when trying to add addresses to '.$list_address.': '.$e->getMessage() );
+			}
+		} else {
+			$this->custom_log( 'Bad array input:' . print_r( $json ) );
 		}
 	}
 
@@ -173,22 +201,22 @@ class OA_Tools_Mailgun {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $listAddress The full address list to query.
-	 * @param string $address The email address to look for in $listAddress.
+	 * @param string $list_address The full address list to query.
+	 * @param string $address The email address to look for in $list_address.
 	 *
 	 * @return boolean
 	 */
-	public function check_list_for_member( $listAddress, $address ) {
+	public function check_list_for_member( $list_address, $address ) {
 		try {
 			// Instantiate the client.
-			$mgClient = new Mailgun( MAILGUN_API_KEY );
+			$mg_client = new Mailgun( MAILGUN_API_KEY );
 
 			// Issue the call to the client.
-			$result = $mgClient->get( "lists/$listAddress/members/$address", array() );
-			$this->custom_log( 'check_list_for_member(): ' . $listAddress . ' | ' . $address );
+			$result = $mg_client->get( "lists/$list_address/members/$address", array() );
+			$this->custom_log( 'check_list_for_member(): ' . $list_address . ' | ' . $address );
 			return true;
 		} catch ( Exception $e ) {
-			$this->custom_log( 'Address ' . $address . ' does not exist in list ' . $listAddress );
+			$this->custom_log( 'Address ' . $address . ' does not exist in list ' . $list_address );
 			return false;
 		}
 	}
