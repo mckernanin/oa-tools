@@ -135,12 +135,12 @@ class OA_Tools_Admin {
 	        return;
 	    }
 		$position_email = get_field( 'position_email', $post_id );
-		$person 		= current( get_field( 'person', $post_id ) );
+		$person 		= get_field( 'person', $post_id );
 		$copied_emails 	= get_field( 'copied_emails', $post_id );
 		$title 			= get_the_title();
 		$lists 			= $this->mailgun->get_lists();
 		if ( $position_email ) {
-			if ( ! in_array( $position_email, $lists ) ) {
+			if ( $lists && ! in_array( $position_email, $lists ) ) {
 				$this->mailgun->create_list( $position_email, $title );
 			}
 			$this->mailgun->add_list_member( $this->mailgun_main_list, $position_email, $title );
@@ -152,6 +152,7 @@ class OA_Tools_Admin {
 			}
 		}
 		if ( $person ) {
+			$person 			  = current( $person );
 			$person_email         = get_field( 'person_email', $person );
 			$fname                = get_field( 'first_name', $person );
 			$lname                = get_field( 'last_name', $person );
@@ -172,7 +173,7 @@ class OA_Tools_Admin {
 					];
 				}
 			}
-			$addresses = json_encode($addresses);
+			$addresses = json_encode( $addresses );
 			$this->mailgun->add_array_list_members( $position_email, $addresses );
 		}
 	}
@@ -205,14 +206,16 @@ class OA_Tools_Admin {
 				'posts_per_page' => 50,
 				'meta_query'     => array(
 					array(
-					  'key' 	=> 'person',
-					  'value' 	=> $post_id,
-					  'compare' => 'LIKE',
+						'key'     => 'person',
+						'value'   => '"' . $post_id . '"',
+						'compare' => 'LIKE',
 					),
 				),
 			);
 			$query = new WP_Query( $options );
-			if ( $query->has_posts() ) {
+			// wp_die(var_dump($query));
+			if ( $query->have_posts() ) {
+				// wp_die('person save');
 				$slack_invite = $this->slack->invite_member( $post_id, $fname, $lname, $person_email );
 				$addresses = [];
 				foreach ( $query->posts as $post ) {
